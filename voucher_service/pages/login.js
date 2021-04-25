@@ -61,13 +61,13 @@ function LoginScreen() {
         // The user has signed in we need to redirect them to the correct endpoints
         getAdminUID().then((data) => {
             if(firebase.auth().currentUser.uid == data.value) {
-                router.replace('/admin/dashboard');
+                router.push('/admin/dashboard');
             } else {
-                router.replace(`/user/${firebase.auth().currentUser.uid}`);
+                router.push(`/user/${firebase.auth().currentUser.uid}`);
             }
         })
     }
-    return null;
+    return <h1>loading</h1>;
 }
 
-export default LoginScreen
+export default LoginScreen;

@@ -13,37 +13,62 @@ if (!firebase.apps.length) {
 
 function userScreen() {
     const [isSignedIn, setIsSignedIn] = useState(false);
-    const [notLoggedOn, setNotLoggedOn] = useState(false);
+    const [isAdmin, setIsAdmin] = useState(false);
     const router = useRouter();
 
     const logout = () => {
         firebase.auth().signOut();
         setIsSignedIn(false);
+        setIsAdmin(false);
+        router.replace('/login');
+    }
+
+    async function getAdminUID() {
+        const data = {key:null, value:null}
+    
+        const dbRef = firebase.database().ref();
+        await dbRef.child("Admin").child("Admin").get().then((snapshot) => {
+            if (snapshot.exists()) {
+                data.key = snapshot.key;
+                data.value = snapshot.val();
+            } else {
+                console.log("No data available");
+            }
+        }).catch((error) => {
+            console.log(error);
+        });
+        return data;
     }
 
     useEffect(() => {
         const authObserver = firebase.auth().onAuthStateChanged(user => {
             if(user) {
                 setIsSignedIn(!!user);
+                
+                // Check if the user is an admin
+                getAdminUID().then((data) => {
+                    if (data.value == firebase.auth().currentUser.uid) {
+                        // isAdmin
+                    } else {
+                        // not an admin
+                        router.replace('/login');
+                    }
+                })
             } else {
-                setNotLoggedOn(true);
+                // Not data returned
             }
         });
         return () => authObserver();
     }, []);
 
-    if(isSignedIn || notLoggedOn) {
-        if(isSignedIn) {
-            return (
-                <div>
-                    <h1>Admin dashboard</h1>
-                    <p>Welcome admin! You are now signed in!</p>
-                    <button onClick={() => logout()}>Logout</button>
-                </div>
-            )
-        } else {
-            router.replace('/login');
-        }
+    if(isSignedIn) {
+        return (
+            <div>
+                <h1>Admin dashboard</h1>
+                <p>Welcome admin! You are now signed in!</p>
+                <button onClick={() => logout()}>Logout</button>
+            </div>
+        )
     }
 
     // loading screen goes here
