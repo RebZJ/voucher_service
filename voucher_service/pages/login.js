@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import firebase from 'firebase';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 import { useRouter } from 'next/router';
-import { firebaseConf } from '../lib/config'
+import { firebaseConf } from '../lib/config';
+import { getAdminUID } from '../lib/firebaseUtil';
 
 const firebaseConfig = firebaseConf;
 
@@ -13,30 +14,13 @@ if(!firebase.apps.length) {
 }
 
 const uiConfig = {
-    signInSuccessUrl: '/',
+    signInSuccessUrl: '/login',
     signInOptions: [
         firebase.auth.EmailAuthProvider.PROVIDER_ID,
         firebase.auth.GoogleAuthProvider.PROVIDER_ID,
         firebase.auth.FacebookAuthProvider.PROVIDER_ID,
     ],
 };
-
-async function getAdminUID() {
-    const data = {key:null, value:null}
-
-    const dbRef = firebase.database().ref();
-    await dbRef.child("Admin").child("Admin").get().then((snapshot) => {
-        if (snapshot.exists()) {
-            data.key = snapshot.key;
-            data.value = snapshot.val();
-        } else {
-            console.log("No data available");
-        }
-    }).catch((error) => {
-        console.log(error);
-    });
-    return data;
-}
 
 function LoginScreen() {
     const [isSignedIn, setIsSignedIn] = useState(false);
@@ -59,11 +43,11 @@ function LoginScreen() {
         );
     } else {
         // The user has signed in we need to redirect them to the correct endpoints
-        getAdminUID().then((data) => {
+        getAdminUID(firebase).then((data) => {
             if(firebase.auth().currentUser.uid == data.value) {
-                router.push('/admin/dashboard');
+                router.replace('/admin/dashboard/');
             } else {
-                router.push(`/user/${firebase.auth().currentUser.uid}`);
+                router.replace(`/user/${firebase.auth().currentUser.uid}/`);
             }
         })
     }
