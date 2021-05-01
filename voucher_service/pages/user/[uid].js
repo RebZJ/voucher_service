@@ -1,7 +1,8 @@
 import firebase from 'firebase';
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { firebaseConf } from '../../lib/config'
+import { firebaseConf } from '../../lib/config';
+import UserDashboard from './UserDashboard';
 
 const firebaseConfig = firebaseConf;
 
@@ -11,7 +12,7 @@ if (!firebase.apps.length) {
     firebase.app();
 }
 
-function userScreen() {
+export default function userScreen() {
     const [isSignedIn, setIsSignedIn] = useState(false);
     const [notLoggedOn, setNotLoggedOn] = useState(false);
     const router = useRouter();
@@ -19,6 +20,7 @@ function userScreen() {
     const logout = () => {
         firebase.auth().signOut();
         setIsSignedIn(false);
+        router.replace('/login');
     }
 
     useEffect(() => {
@@ -35,11 +37,7 @@ function userScreen() {
     if(isSignedIn || notLoggedOn) {
         if(isSignedIn) {
             return (
-                <div>
-                    <h1>Voucher-service</h1>
-                    <p>Welcome {firebase.auth().currentUser.displayName}! You are now signed in!</p>
-                    <button onClick={() => logout()}>Logout</button>
-                </div>
+                <UserDashboard firebase={firebase}/>
             )
         } else {
             router.replace('/login');
@@ -53,5 +51,3 @@ function userScreen() {
         </div>
     )
 }
-
-export default userScreen;
