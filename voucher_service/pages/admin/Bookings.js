@@ -43,7 +43,7 @@ export default function VBookings(props) {
         var list = [];
         for (let i in bookState) {
             if (bookState[i].uid) {
-                list.push(<BookingComponent book={bookState[i]} key={bookState[i].uid} />);
+                list.push(<BookingComponent book={bookState[i]} key={i} />);
             }
         }
         return list;
@@ -65,9 +65,14 @@ export default function VBookings(props) {
 
 function BookingComponent(props) {
 
+    function updateInfo() {
+
+    }
     return (
         <div className=" m-4 shadow-xl rounded-lg max-w-sm h-auto p-10 flex flex-col bg-blue-200">
+            <p className="font-bold">Booking by: {props.book.uid}</p>
             <div>
+
                 <p><span>Time: </span><span>{props.book.time}{" "}</span>
 
                     <span>Date: {props.book.date}</span>
@@ -77,11 +82,13 @@ function BookingComponent(props) {
                 <p>Message: {props.book.message}</p>
                 <p>Status: {props.book.status}</p>
                 <p>Voucher Type: {props.book.voucherType}</p>
+
             </div>
+
             <div>
                 <button className="bg-blue-500 
                 hover:bg-blue-700 text-white font-bold 
-                py-2 px-4 mt-4 rounded">
+                py-2 px-4 mt-4 rounded" onClick={() => updateInfo()}>
                     Modify
                 </button>
             </div>
