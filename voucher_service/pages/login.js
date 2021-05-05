@@ -45,7 +45,6 @@ function LoginScreen() {
     } else {
         // First check if the user has been created
         checkUser(firebase).then((hasUser) => {
-            console.log(hasUser);
             if (!hasUser) {
                 console.log("Adding user");
                 addUser(firebase);
