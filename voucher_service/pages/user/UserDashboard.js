@@ -9,10 +9,12 @@ export default function UserDashboard({firebase}) {
     }
 
     return (
-        <div>
-            <h1>Voucher-service</h1>
-            <p>Welcome {firebase.auth().currentUser.displayName}! You are now signed in!</p>
-            <button onClick={() => logout()}>Logout</button>
+        <div className="justify-center flex min-h-screen ">
+            <div className="pt-10">
+                <h1>Voucher-service</h1>
+                <p>Welcome {firebase.auth().currentUser.displayName}! You are now signed in!</p>
+                <button onClick={() => logout()}>Logout</button>
+            </div>
         </div>
     );
 }

@@ -9,10 +9,12 @@ export default function AdminDashboard({firebase}) {
     }
 
     return (
-        <div>
-            <h1>Admin Dashboard</h1>
-            <p>Welcome admin! You are now signed in!</p>
-            <button onClick={() => logout()}>Logout</button>
+        <div className="justify-center flex min-h-screen ">
+            <div className="pt-10">
+                <h1>Admin Dashboard</h1>
+                <p>Welcome admin! You are now signed in!</p>
+                <button onClick={() => logout()}>Logout</button>
+            </div>
         </div>
     );
 }
