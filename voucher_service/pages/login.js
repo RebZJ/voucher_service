@@ -33,6 +33,11 @@ function LoginScreen() {
         return () => unregisterAuthObserver(); // Make sure we un-register Firebase observers
     }, []);
 
+    // Sets the auth state persistence to be session based
+    useEffect(() => {
+        firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
+    }, []);
+
     if(!isSignedIn) {
         return (
             <div className="justify-center flex min-h-screen ">
