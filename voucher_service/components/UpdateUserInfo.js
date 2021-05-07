@@ -24,7 +24,7 @@ const UpdateUserInfo = () => {
             return
         }
 
-        // update personal info (can't update email)
+        // update personal info (not sure about updating email yet? unsure how this is handled for google account logins)
         if (contactNumber != '') {
             await dbRef.child("personalInfo").update({
                 contactNumber: contactNumber,
@@ -34,6 +34,9 @@ const UpdateUserInfo = () => {
             await dbRef.child("personalInfo").update({
                 name: displayName
             });
+            await firebase.auth().currentUser.updateProfile({
+                displayName: displayName,
+            })
         }
 
         // update billing info
