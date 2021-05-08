@@ -1,35 +1,25 @@
-import { useState, useEffect } from 'react';
-import Head from 'next/head';
-import fire from '../config/fire-config';
-import CreatePost from '../components/CreatePost';
-const Home = () => {
-    const [blogs, setBlogs] = useState([]);
-    useEffect(() => {
-        fire.firestore()
-            .collection('blog')
-            .onSnapshot(snap => {
-                const blogs = snap.docs.map(doc => ({
-                    id: doc.id,
-                    ...doc.data()
-                }));
-                setBlogs(blogs);
-            });
-    }, []);
+import UpdateUserInfo from "../components/UpdateUserInfo";
+import Head from "next/dist/next-server/lib/head";
+import React from "react";
+import {firebaseConf} from '../lib/config';
+import firebase from "firebase";
+
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConf);
+} else {
+    firebase.app();
+}
+export default function Test() {
     return (
         <div>
             <Head>
-                <title>Blog App</title>
+                <title>Update User Info</title>
             </Head>
-            <h1>Blog</h1>
-            <ul>
-                {blogs.map(blog =>
-                    <li key={blog.id}>
-                        {blog.title}
-                    </li>
-                )}
-            </ul>
-            <CreatePost />
+
+            <h1>Update User Info</h1> <br/> <br/> <br/>
+
+
+            <UpdateUserInfo/>
         </div>
     )
 }
-export default Home;

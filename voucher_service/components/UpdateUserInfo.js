@@ -4,6 +4,7 @@ import firebase from 'firebase';
 
 
 const UpdateUserInfo = () => {
+    const [emailAddress, setEmailAddress] = useState('');
     const [contactNumber, setContactNumber] = useState('');
     const [displayName, setDisplayName] = useState('');
     const [billerEmailAddress, setBillerEmailAddress] = useState('');
@@ -16,7 +17,7 @@ const UpdateUserInfo = () => {
         const dbRef = firebase.database().ref().child("users").child(String(uid));
 
         // don't update database if form is empty
-        if (contactNumber == '' && displayName == '' && billerEmailAddress == '' && invoiceName == '') {
+        if (emailAddress == '' && contactNumber == '' && displayName == '' && billerEmailAddress == '' && invoiceName == '') {
             setNotification('No new information submitted');
             setTimeout(() => {
                 setNotification('')
@@ -25,6 +26,11 @@ const UpdateUserInfo = () => {
         }
 
         // update personal info (not sure about updating email yet? unsure how this is handled for google account logins)
+        if (emailAddress != '') {
+            await dbRef.child("personalInfo").update({
+                email: emailAddress,
+            });
+        }
         if (contactNumber != '') {
             await dbRef.child("personalInfo").update({
                 contactNumber: contactNumber,
@@ -67,6 +73,11 @@ const UpdateUserInfo = () => {
             {notification}
 
             <form onSubmit={handleSubmit}>
+                <div>
+                    Email Address<br />
+                    <textarea value={emailAddress}
+                              onChange={({target}) => setEmailAddress(target.value)} />
+                </div>
                 <div>
                     Contact Number<br />
                     <textarea value={contactNumber}
