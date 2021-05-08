@@ -4,16 +4,29 @@ import React from "react";
 
 import { useState, useEffect } from 'react';
 import firebase from 'firebase';
+import { useRouter } from 'next/router';
 
 export default function ViewUserInfo(props) {
     const [personalInfo, setPersonalInfo] = useState('');
     const [billerInfo, setBillerInfo] = useState('');
+    const [pointsRemaining, setPointsRemaining] = useState('');
 
     useEffect(() => {
             async function getData() {
                 var data = ''
                 const uid = firebase.auth().currentUser.uid;
                 const dbRef = firebase.database().ref();
+                await dbRef.child("users").child(String(uid)).child("pointsRemaining").get().then((snapshot) => {
+                    if (snapshot.exists()) {
+                        data = snapshot.val();
+                    } else {
+                        console.log("No data available");
+                    }
+                }).catch((error) => {
+                    console.log(error);
+                });
+                setPointsRemaining(data);
+
                 await dbRef.child("users").child(String(uid)).child("personalInfo").get().then((snapshot) => {
                     if (snapshot.exists()) {
                         data = snapshot.val();
@@ -42,9 +55,10 @@ export default function ViewUserInfo(props) {
 
     function populate() {
         var list = [];
-        const allInfo = [personalInfo, billerInfo];
+        const allInfo = [personalInfo, billerInfo, pointsRemaining];
         list.push(<PersonalInfoComponent info={allInfo[0]} key={0} />);
         list.push(<BillerInfoComponent info={allInfo[1]} key={1} />);
+        list.push(<PointsRemainingComponent info={allInfo[2]} key={2} />);
         return list;
     }
 
@@ -59,14 +73,25 @@ export default function ViewUserInfo(props) {
             <div>Loading...</div>
     )
 };
-
-function PersonalInfoComponent(props) {
-    function updateInfo() {
-
-    }
+function PointsRemainingComponent(props) {
     return (
         <div className=" m-4 shadow-xl rounded-lg max-w-sm h-auto p-10 flex flex-col bg-blue-200">
-            <p className="font-bold">Personal Details: {firebase.auth().currentUser.displayName}</p>
+            <p className="font-bold">Points Remaining:</p>
+            <div>
+                <p>{props.info}</p>
+            </div>
+        </div>)
+}
+
+function PersonalInfoComponent(props) {
+    const router = useRouter();
+    function updateInfo() {
+        router.replace(`/test/`);
+    }
+
+    return (
+        <div className=" m-4 shadow-xl rounded-lg max-w-sm h-auto p-10 flex flex-col bg-blue-200">
+            <p className="font-bold">Personal Details:</p>
             <div>
                 <p>Name: {props.info.name}</p>
                 <p>Email: {props.info.email}</p>
@@ -84,12 +109,14 @@ function PersonalInfoComponent(props) {
 }
 
 function BillerInfoComponent(props) {
+    const router = useRouter();
     function updateInfo() {
-
+        router.replace(`/test/`);
     }
+
     return (
         <div className=" m-4 shadow-xl rounded-lg max-w-sm h-auto p-10 flex flex-col bg-blue-200">
-            <p className="font-bold">Biller Details: {firebase.auth().currentUser.displayName}</p>
+            <p className="font-bold">Biller Details:</p>
             <div>
                 <p>Biller Email: {props.info.billerEmailAddress}</p>
                 <p>Invoice Name: {props.info.invoiceName}</p>
