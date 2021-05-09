@@ -1,11 +1,15 @@
-import Head from 'next/head';
-import UpdateUserInfo from '../components/UpdateUserInfo';
 import React from "react";
 
 import { useState, useEffect } from 'react';
 import firebase from 'firebase';
 import { useRouter } from 'next/router';
+import {firebaseConf} from "../../lib/config";
 
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConf);
+} else {
+    firebase.app();
+}
 export default function ViewUserInfo(props) {
     const [personalInfo, setPersonalInfo] = useState('');
     const [billerInfo, setBillerInfo] = useState('');
@@ -86,7 +90,7 @@ function PointsRemainingComponent(props) {
 function PersonalInfoComponent(props) {
     const router = useRouter();
     function updateInfo() {
-        router.replace(`/test/`);
+        router.replace(`/user/UpdateUserInfo/`);
     }
 
     return (
@@ -111,7 +115,7 @@ function PersonalInfoComponent(props) {
 function BillerInfoComponent(props) {
     const router = useRouter();
     function updateInfo() {
-        router.replace(`/test/`);
+        router.replace(`/user/UpdateUserInfo/`);
     }
 
     return (

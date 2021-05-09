@@ -3,7 +3,7 @@ import firebase from 'firebase';
 
 
 
-const UpdateUserInfo = () => {
+const UpdateUserInfoForm = () => {
     const [emailAddress, setEmailAddress] = useState('');
     const [contactNumber, setContactNumber] = useState('');
     const [displayName, setDisplayName] = useState('');
@@ -103,4 +103,4 @@ const UpdateUserInfo = () => {
         </div>
     )
 };
-export default UpdateUserInfo;
+export default UpdateUserInfoForm;

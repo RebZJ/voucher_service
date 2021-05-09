@@ -1,7 +1,7 @@
-import UpdateUserInfo from "../components/UpdateUserInfo";
+import UpdateUserInfoForm from "../../components/UpdateUserInfoForm";
 import Head from "next/dist/next-server/lib/head";
 import React from "react";
-import {firebaseConf} from '../lib/config';
+import {firebaseConf} from '../../lib/config';
 import firebase from "firebase";
 
 if (!firebase.apps.length) {
@@ -9,7 +9,7 @@ if (!firebase.apps.length) {
 } else {
     firebase.app();
 }
-export default function Test() {
+export default function UpdateUserInfo() {
     return (
         <div>
             <Head>
@@ -19,7 +19,7 @@ export default function Test() {
             <h1>Update User Info</h1> <br/> <br/> <br/>
 
 
-            <UpdateUserInfo/>
+            <UpdateUserInfoForm/>
         </div>
     )
 }
