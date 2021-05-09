@@ -1,5 +1,6 @@
 import firebase from "firebase";
 import React, { useEffect, useState } from "react";
+import { useFormik } from "formik";
 import { useRouter } from "next/router";
 import { firebaseConf } from "../../lib/config";
 
@@ -13,7 +14,6 @@ if (!firebase.apps.length) {
 
 export default function ServiceTypes(props) {
   const [services, setServices] = useState([]);
-  const [newService, setNewService] = useState(null);
 
   useEffect(() => {
     async function getData() {
@@ -66,7 +66,64 @@ export default function ServiceTypes(props) {
 }
 
 function ServiceComponent(props) {
-  function updateInfo() {}
+  const AddServiceForm = () => {
+    // Pass the useFormik() hook initial form values and a submit function that will
+    // be called when the form is submitted
+    const formik = useFormik({
+      initialValues: {
+        Name: "New Service",
+        Location: "",
+        DeliveryOptions: [],
+        Points: "",
+      },
+      onSubmit: (values) => {
+        // alert(JSON.stringify(values, null, 2));
+        console.log(values);
+      },
+    });
+    return (
+      <form onSubmit={formik.handleSubmit}>
+        <label>New Service Type</label>
+        <input
+          id="Name"
+          name="Name"
+          type="Name"
+          onChange={formik.handleChange}
+          value={formik.values.Name}
+        />
+
+        <label>Location</label>
+        <input
+          id="Location"
+          name="Location"
+          type="Location"
+          onChange={formik.handleChange}
+          value={formik.values.Locationame}
+        />
+        <label>Points</label>
+        <input
+          id="Points"
+          name="Points"
+          type="Points"
+          onChange={formik.handleChange}
+          value={formik.values.Points}
+        />
+        <select
+          DeliveryOptions=""
+          value={values.DeliveryOptions}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          style={{ display: "block" }}
+        >
+          <option value="" label="Select a delivery option" />
+          <option value="1" label="1" />
+          <option value="2" label="2" />
+        </select>
+
+        <button type="submit">Submit</button>
+      </form>
+    );
+  };
   return (
     <div className=" m-4 shadow-xl rounded-lg max-w-sm h-auto p-10 flex flex-col bg-blue-200">
       <p className="font-bold">Service Types</p>
@@ -82,7 +139,7 @@ function ServiceComponent(props) {
           className="bg-blue-500 
                 hover:bg-blue-700 text-white font-bold 
                 py-2 px-4 mt-4 rounded"
-          onClick={() => updateInfo()}
+          onClick={() => AddServiceForm()}
         >
           Add new Services
         </button>
