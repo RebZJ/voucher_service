@@ -79,8 +79,16 @@ function ServiceComponent(props) {
       onSubmit: (values) => {
         // alert(JSON.stringify(values, null, 2));
         console.log(values);
+        let serviceRef = props.dbRef.child("voucherTypeServices").child("voucherType")
+        await serviceRef.push({
+            name: values.Name,
+            location: values.Location,
+            points: values.Points,
+            deliveryOptions: values.DeliveryOptions
+        })
       },
     });
+
     return (
       <form onSubmit={formik.handleSubmit}>
         <label>New Service Type</label>
@@ -124,6 +132,7 @@ function ServiceComponent(props) {
       </form>
     );
   };
+  
   return (
     <div className=" m-4 shadow-xl rounded-lg max-w-sm h-auto p-10 flex flex-col bg-blue-200">
       <p className="font-bold">Service Types</p>
