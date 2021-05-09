@@ -55,7 +55,7 @@ function Navbar() {
                         ? `hidden`
                         : `p-4 w-full flex flex-row justify-between h-20 z-40 ${anim.fadeIn}`
                 }>
-                <div className={`w-60 relative z-50 flex flex-row `}>
+                <div className={`w-60 relative z-50 flex flex-row font-bold italic`}>
                     Voucher Service
                 </div>
                 <button

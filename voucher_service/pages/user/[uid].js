@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { firebaseConf } from '../../lib/config';
 import UserDashboard from './UserDashboard';
+import { checkUser } from '../../lib/firebaseUtil';
 
 const firebaseConfig = firebaseConf;
 

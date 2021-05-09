@@ -3,7 +3,7 @@ import firebase from 'firebase';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 import { useRouter } from 'next/router';
 import { firebaseConf } from '../lib/config';
-import { getAdminUID } from '../lib/firebaseUtil';
+import { checkIfAdmin, checkUser, addUser } from '../lib/firebaseUtil';
 
 const firebaseConfig = firebaseConf;
 
@@ -14,7 +14,6 @@ if(!firebase.apps.length) {
 }
 
 const uiConfig = {
-    signInSuccessUrl: '/login',
     signInOptions: [
         firebase.auth.EmailAuthProvider.PROVIDER_ID,
         firebase.auth.GoogleAuthProvider.PROVIDER_ID,
@@ -34,17 +33,32 @@ function LoginScreen() {
         return () => unregisterAuthObserver(); // Make sure we un-register Firebase observers
     }, []);
 
+    // Sets the auth state persistence to be session based
+    useEffect(() => {
+        firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
+    }, []);
+
     if(!isSignedIn) {
         return (
-            <div>
-                <h1>Login</h1>
-                <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()}/>
+            <div className="justify-center flex min-h-screen ">
+                <div className="pt-10">
+                    <h1>Login</h1>
+                    <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()}/>
+                </div>
             </div>
         );
     } else {
-        // The user has signed in we need to redirect them to the correct endpoints
-        getAdminUID(firebase).then((data) => {
-            if(firebase.auth().currentUser.uid == data.value) {
+        // First check if the user has been created
+        checkUser(firebase).then((hasUser) => {
+            if (!hasUser) {
+                console.log("Adding user");
+                addUser(firebase);
+            }
+        });
+
+        // Check if the user is an admin
+        checkIfAdmin(firebase).then((data) => {
+            if("Admin" == data.value.role) {
                 router.replace('/admin/dashboard/');
             } else {
                 router.replace(`/user/${firebase.auth().currentUser.uid}/`);
