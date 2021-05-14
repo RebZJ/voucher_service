@@ -55,3 +55,39 @@ export async function checkUser(firebase) {
     });
     return hasUser;
 }
+
+export async function getData(firebase) {
+    var data = {}
+    const uid = firebase.auth().currentUser.uid;
+    const dbRef = firebase.database().ref();
+    await dbRef.child("users").child(String(uid)).child("pointsRemaining").get().then((snapshot) => {
+        if (snapshot.exists()) {
+            data.points = snapshot.val();
+        } else {
+            console.log("No data available");
+        }
+    }).catch((error) => {
+        console.log(error);
+    });
+
+    await dbRef.child("users").child(String(uid)).child("personalInfo").get().then((snapshot) => {
+        if (snapshot.exists()) {
+            data.personalInfo = snapshot.val();
+        } else {
+            console.log("No data available");
+        }
+    }).catch((error) => {
+        console.log(error);
+    });
+
+    await dbRef.child("users").child(String(uid)).child("billerInfo").get().then((snapshot) => {
+        if (snapshot.exists()) {
+            data.billerInfo = snapshot.val();
+        } else {
+            console.log("No data available");
+        }
+    }).catch((error) => {
+        console.log(error);
+    });
+    return data;
+}
