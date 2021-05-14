@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import firebase from 'firebase';
 import { useRouter } from 'next/router';
 import {firebaseConf} from "../../lib/config";
+import {getData} from "../../lib/firebaseUtil";
 
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConf);
@@ -15,50 +16,29 @@ export default function ViewUserInfo(props) {
     const [billerInfo, setBillerInfo] = useState('');
     const [pointsRemaining, setPointsRemaining] = useState('');
 
+    const [isSignedIn, setIsSignedIn] = useState(false);
+    const [notLoggedOn, setNotLoggedOn] = useState(false);
+    const router = useRouter();
+
     useEffect(() => {
-            async function getData() {
-                var data = ''
-                const uid = firebase.auth().currentUser.uid;
-                const dbRef = firebase.database().ref();
-                await dbRef.child("users").child(String(uid)).child("pointsRemaining").get().then((snapshot) => {
-                    if (snapshot.exists()) {
-                        data = snapshot.val();
-                    } else {
-                        console.log("No data available");
-                    }
-                }).catch((error) => {
-                    console.log(error);
-                });
-                setPointsRemaining(data);
-
-                await dbRef.child("users").child(String(uid)).child("personalInfo").get().then((snapshot) => {
-                    if (snapshot.exists()) {
-                        data = snapshot.val();
-                    } else {
-                        console.log("No data available");
-                    }
-                }).catch((error) => {
-                    console.log(error);
-                });
-                setPersonalInfo(data);
-
-                await dbRef.child("users").child(String(uid)).child("billerInfo").get().then((snapshot) => {
-                    if (snapshot.exists()) {
-                        data = snapshot.val();
-                    } else {
-                        console.log("No data available");
-                    }
-                }).catch((error) => {
-                    console.log(error);
-                });
-                setBillerInfo(data);
+        const authObserver = firebase.auth().onAuthStateChanged(user => {
+            if(user) {
+                setIsSignedIn(!!user);
+                getData(firebase).then((data) => {
+                    setPersonalInfo(data.personalInfo);
+                    setBillerInfo(data.billerInfo);
+                    setPointsRemaining(data.points);
+                })
+            } else {
+                setNotLoggedOn(true);
             }
-            getData()
-        }, []
-    );
+        });
+        return () => authObserver();
+    }, []);
 
     function populate() {
         var list = [];
+        console.log(personalInfo)
         const allInfo = [personalInfo, billerInfo, pointsRemaining];
         list.push(<PersonalInfoComponent info={allInfo[0]} key={0} />);
         list.push(<BillerInfoComponent info={allInfo[1]} key={1} />);
@@ -66,15 +46,23 @@ export default function ViewUserInfo(props) {
         return list;
     }
 
-    return (
-        personalInfo ?
-            <div className="justify-center flex min-h-screen ">
-                <div className="pt-10">
-                    <ul>{populate()}</ul>
+    if(isSignedIn || notLoggedOn) {
+        if(isSignedIn) {
+            return (
+                <div className="justify-center flex min-h-screen ">
+                    <div className="pt-10">
+                        <ul>{populate()}</ul>
+                    </div>
                 </div>
-            </div>
-            :
-            <div>Loading...</div>
+            )
+        } else {
+            router.replace('/login');
+        }
+    }
+    return (
+        <div>
+            <h1>Loading</h1>
+        </div>
     )
 };
 function PointsRemainingComponent(props) {
