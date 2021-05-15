@@ -35,7 +35,7 @@ function LoginScreen() {
 
     // Sets the auth state persistence to be session based
     useEffect(() => {
-        firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
+        firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
     }, []);
 
     if(!isSignedIn) {
