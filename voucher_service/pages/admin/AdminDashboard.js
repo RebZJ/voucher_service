@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { AddNewServiceType } from "../../components/AddNewServiceType";
+import AddNewServiceType from "../../components/AddNewServiceType";
 
 export default function AdminDashboard({ firebase }) {
   const router = useRouter();

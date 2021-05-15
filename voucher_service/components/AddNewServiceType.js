@@ -6,6 +6,7 @@ const AddNewServiceType = () => {
   const [Location, setLocation] = useState("");
   const [DeliveryOptions, setOptions] = useState(["1", "2"]);
   const [Points, setPoints] = useState("");
+  const [Notification, setNotification] = useState("");
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -45,7 +46,7 @@ const AddNewServiceType = () => {
   return (
     <div>
       <h2>Add new service type</h2>
-      {notification}
+      {Notification}
 
       <form onSubmit={handleSubmit}>
         <div>
