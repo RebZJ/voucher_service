@@ -6,7 +6,8 @@ import 'react-datepicker/dist/react-datepicker-cssmodules.css';
 
 const AddNewBookingForm = () => {
     const MISSING = '--';
-    const [allData, setAllData] = useState(null);
+    const [voucherServiceData, setVoucherServiceData] = useState(null);
+    const [pointsRemaining, setPointsRemaining] = useState('');
 
     const [voucherType, setVoucherType] = useState(MISSING);
     const [deliveryType, setDeliveryType] = useState(MISSING);
@@ -20,7 +21,7 @@ const AddNewBookingForm = () => {
     const dbRef = firebase.database().ref();
 
     useEffect(() => {
-        async function getAllData() {
+        async function getVoucherServiceData() {
             var data = {};
             await dbRef.child("voucherTypeService").child("voucherType").get().then((snapshot) => {
                 if (snapshot.exists()) {
@@ -32,17 +33,31 @@ const AddNewBookingForm = () => {
             }).catch((error) => {
                 console.log(error);
             });
-            setAllData(data);
+            setVoucherServiceData(data);
             return data;
         }
-        getAllData();
+        async function getPointsRemaining() {
+            var data = {};
+            await dbRef.child("users").child(uid).get().then((snapshot) => {
+                if (snapshot.exists()) {
+                    data = snapshot.val();
+                } else {
+                    console.log("No data available");
+                }
+            }).catch((error) => {
+                console.log(error);
+            });
+            setPointsRemaining(data.pointsRemaining);
+        }
+        getVoucherServiceData();
+        getPointsRemaining();
         }, []
     );
-    // shows the names of all voucher services available
+    // shows the names of all voucher services available, along with the number of points needed for each one
     function populateVoucherTypeData() {
         var list = [];
-        for (let i in allData) {
-            list.push(<option value={allData[i].name}> {allData[i].name} </option>);
+        for (let i in voucherServiceData) {
+            list.push(<option value={voucherServiceData[i].name}> {voucherServiceData[i].name + " - " + voucherServiceData[i].points + " points"} </option>);
         }
         return list;
     }
@@ -52,9 +67,9 @@ const AddNewBookingForm = () => {
         if (serviceName == MISSING) {
             return;
         }
-        for (let i in allData) {
-            if (allData[i].name == serviceName) {
-                for (let option of allData[i].deliveryOptions) {
+        for (let i in voucherServiceData) {
+            if (voucherServiceData[i].name == serviceName) {
+                for (let option of voucherServiceData[i].deliveryOptions) {
                     if (option == "1") {
                         list.push(<option value="delivery">delivery</option>)
                     } else if (option == "2") {
@@ -76,9 +91,9 @@ const AddNewBookingForm = () => {
         }
         // pickup from service location
         else if (deliveryMethod == "pickup") {
-            for (let i in allData) {
-                if (allData[i].name == serviceName) {
-                    return <option value={allData[i].location}> {allData[i].location} </option>;
+            for (let i in voucherServiceData) {
+                if (voucherServiceData[i].name == serviceName) {
+                    return <option value={voucherServiceData[i].location}> {voucherServiceData[i].location} </option>;
                 }
             }
         }
@@ -108,6 +123,24 @@ const AddNewBookingForm = () => {
         const date = day + "/" + month + "/" + year;
         return [date, time];
     }
+    // returns true if user points could be redeemed for voucher service and updated successfully, or false if user has insufficient points
+    async function updateUserPoints(serviceName) {
+        var pointsNeeded = 0;
+        for (let i in voucherServiceData) {
+            if (voucherServiceData[i].name == serviceName) {
+                pointsNeeded = voucherServiceData[i].points;
+            }
+        }
+        const newPoints = parseFloat(pointsRemaining) - parseFloat(pointsNeeded);
+        if (newPoints < 0) {
+            return false;
+        }
+        else {
+            await dbRef.child("users").child(uid).update({pointsRemaining: newPoints});
+            setPointsRemaining(String(newPoints));
+            return true;
+        }
+    }
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -119,7 +152,15 @@ const AddNewBookingForm = () => {
             }, 2000);
             return
         }
-        // otherwise, create a new booking
+        // if points could not be updated successfully, it means that the user doesn't have enough points remaining
+        else if (!(await updateUserPoints(voucherType))) {
+            setNotification('Not enough points remaining to create booking for selected service');
+            setTimeout(() => {
+                setNotification('')
+            }, 2000);
+            return
+        }
+        // create a booking if user has enough points
         else {
             const [date, time] = parseDateTime();
             await dbRef.child("voucherBookings").push().set({
@@ -145,9 +186,9 @@ const AddNewBookingForm = () => {
     };
     return (
         <div>
-            <h2>Add New Booking</h2> <br />
+            <h2><b><u>Add New Booking</u></b></h2> <br />
+            <h3><b>Points Remaining: {pointsRemaining}</b></h3> <br />
             {notification}
-
             <form onSubmit={handleSubmit}>
                 <div>
                     Voucher Services<br />
