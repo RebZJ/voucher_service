@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import { useState, useEffect } from 'react';
+import Link from 'next/link'
 
 export default function UserDashboard({firebase}) {
     const [userData, setUserData] = useState(null);
@@ -22,6 +23,9 @@ export default function UserDashboard({firebase}) {
             <div className="pt-10">
                 <h1>Voucher-service</h1>
                 <p>Welcome {userData ? userData.displayName : "unknown user"}! You are now signed in!</p>
+                <Link href = "/user/AddNewBooking">
+                    <a> Add New Booking</a>
+                </Link> <br />
                 <button onClick={() => logout()}>Logout</button>
             </div>
         </div>
