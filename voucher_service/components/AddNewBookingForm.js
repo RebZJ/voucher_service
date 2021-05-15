@@ -11,8 +11,7 @@ const AddNewBookingForm = () => {
     const [voucherType, setVoucherType] = useState(MISSING);
     const [deliveryType, setDeliveryType] = useState(MISSING);
     const [location, setLocation] = useState(MISSING);
-    const [date, setDate] = useState('');
-    const [time, setTime] = useState('');
+    const [dateTime, setDateTime] = useState('');
 
     const [optionalMessage, setOptionalMessage] = useState('');
     const [notification, setNotification] = useState('');
@@ -33,14 +32,13 @@ const AddNewBookingForm = () => {
             }).catch((error) => {
                 console.log(error);
             });
-            console.log(data);
             setAllData(data);
             return data;
         }
         getAllData();
         }, []
     );
-
+    // shows the names of all voucher services available
     function populateVoucherTypeData() {
         var list = [];
         for (let i in allData) {
@@ -48,7 +46,7 @@ const AddNewBookingForm = () => {
         }
         return list;
     }
-
+    // shows all possible delivery options for a given voucher service
     function populateDeliveryTypeData(serviceName) {
         var list = [];
         if (serviceName == MISSING) {
@@ -67,10 +65,10 @@ const AddNewBookingForm = () => {
         }
         return list;
     }
-
+    // shows the location options available for a given voucher service and delivery method
     function populateLocationData(serviceName, deliveryMethod) {
         if (serviceName == MISSING || deliveryMethod == MISSING) {
-            return <option value={MISSING}> {MISSING} </option>;
+            return;
         }
         // delivery to MYD office
         if (deliveryMethod == "delivery") {
@@ -85,11 +83,36 @@ const AddNewBookingForm = () => {
             }
         }
     }
+    // dateTime is formatted like "Wed May 19 2021 00:00:00 GMT+1000 (Australian Eastern Standard Time)"
+    function parseDateTime() {
+        const splitDateTime = String(dateTime).split(" ");
+        const day = splitDateTime[2];
+        const monthNumbers = {
+            "Jan": "01",
+            "Feb": "02",
+            "Mar": "03",
+            "Apr": "04",
+            "May": "05",
+            "Jun": "06",
+            "Jul": "07",
+            "Aug": "08",
+            "Sep": "09",
+            "Oct": "10",
+            "Nov": "11",
+            "Dec": "12"
+        };
+        const month = monthNumbers[splitDateTime[1]];
+        const year = splitDateTime[3];
+        const splitTime = splitDateTime[4].split(":");
+        const time = splitTime[0] + ":" + splitTime[1] + " " + splitDateTime[5];
+        const date = day + "/" + month + "/" + year;
+        return [date, time];
+    }
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         // don't create booking if required field is missing
-        if (voucherType == MISSING || deliveryType == MISSING || location == MISSING || date == '' || time == '') {
+        if (voucherType == MISSING || deliveryType == MISSING || location == MISSING || dateTime == '') {
             setNotification('Please fill out all required fields');
             setTimeout(() => {
                 setNotification('')
@@ -98,13 +121,14 @@ const AddNewBookingForm = () => {
         }
         // otherwise, create a new booking
         else {
+            const [date, time] = parseDateTime();
             await dbRef.child("voucherBookings").push().set({
-                date: String(date),
+                date: date,
                 delivery: deliveryType,
                 location: location,
                 message: optionalMessage,
                 status: "pending",
-                time: String(time),
+                time: time,
                 uid: uid,
                 voucherType: voucherType
             });
@@ -112,8 +136,7 @@ const AddNewBookingForm = () => {
         setVoucherType(MISSING);
         setDeliveryType(MISSING);
         setLocation(MISSING);
-        setDate('');
-        setTime('');
+        setDateTime('');
         setOptionalMessage('');
         setNotification('Booking created');
         setTimeout(() => {
@@ -150,20 +173,12 @@ const AddNewBookingForm = () => {
                     </select>
                 </div> <br />
                 <div>
-                    Booking Date<br />
-                    <DatePicker selected={date}
-                                dateFormat="dd/MM/yyyy"
-                                onChange={target => setDate(target)}/>
-                </div>
-                <div>
-                    Booking Time<br />
-                    <DatePicker selected={time}
+                    Booking Date and Time<br />
+                    <DatePicker selected={dateTime}
+                                dateFormat="dd/MM/yyyy h:mm aa"
                                 showTimeSelect
-                                showTimeSelectOnly
-                                timeIntervals={15}
                                 timeCaption="Time"
-                                dateFormat="h:mm aa"
-                                onChange={target => setTime(target)}/>
+                                onChange={target => setDateTime(target)}/>
                 </div>
 
                 <div>
