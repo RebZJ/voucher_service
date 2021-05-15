@@ -29,14 +29,16 @@ export default function UpdateUserInfo() {
     if(isSignedIn || notLoggedOn) {
         if(isSignedIn) {
             return (
-                <div>
-                    <Head>
-                        <title>Update User Info</title>
-                    </Head>
-        
-                    <h1>Update User Info</h1> <br/> <br/> <br/>
-        
-                    <UpdateUserInfoForm/>
+                <div className="flex justify-start min-h-screen ">
+                    <div className="pt-10 m-8">
+                        <Head>
+                            <title>Update User Info</title>
+                        </Head>
+            
+                        <h1>Update User Info</h1> <br/> <br/> <br/>
+            
+                        <UpdateUserInfoForm/>
+                    </div>
                 </div>
             )
         } else {
