@@ -3,16 +3,21 @@ export async function checkIfAdmin(firebase) {
     const uid = firebase.auth().currentUser.uid
 
     const dbRef = firebase.database().ref();
-    await dbRef.child("users").child(uid).get().then((snapshot) => {
-        if (snapshot.exists()) {
-            data.key = snapshot.key;
-            data.value = snapshot.val();
-        } else {
-            console.log("No data available");
-        }
-    }).catch((error) => {
-        console.log(error);
-    });
+    var hasData = false;
+    
+    while(!hasData) {
+        await dbRef.child("users").child(uid).get().then((snapshot) => {
+            if (snapshot.exists()) {
+                data.key = snapshot.key;
+                data.value = snapshot.val();
+                hasData = true;
+            } else {
+                console.log("No data available");
+            }
+        }).catch((error) => {
+            console.log(error);
+        });
+    }
     return data;
 }
 
@@ -40,11 +45,11 @@ export async function addUser(firebase) {
 
 export async function checkUser(firebase) {
     const uid = firebase.auth().currentUser.uid;
-    const dbRef = firebase.database().ref().child("users").equalTo(String(uid));
+    const dbRef = firebase.database().ref().child("users").child(String(uid));
     var hasUser = false;
 
     await dbRef.get().then((snapshot) => {
-        if (snapshot.exists) {
+        if (snapshot.exists()) {
             // User has been defined
             hasUser = true;
         } else {
