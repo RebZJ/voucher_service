@@ -1,6 +1,5 @@
 import firebase from 'firebase';
 import React, { useEffect, useState } from 'react';
-
 import { firebaseConf } from '../../lib/config';
 
 const firebaseConfig = firebaseConf;

@@ -86,18 +86,18 @@ function Links(props) {
                 </button>
             </Link>
 
-            <Link href="/about">
+            <Link href="/admin/AdminDashboard">
                 <button
                     className={`${props.hg} ${props.pad} w-auto rounded-sm text-black font-bold ${buttonStyle}`}
                     onClick={() => console.log("thingo")}>
-                    About Me
+                    Admin
                 </button>
             </Link>
-            <Link href="/contact">
+            <Link href="/login">
                 <button
                     className={`${props.hg} ${props.pad} w-auto rounded-sm text-black font-bold ${buttonStyle}`}
                     onClick={() => console.log("thingo")}>
-                    Contact
+                    Login
                 </button>
             </Link>
 

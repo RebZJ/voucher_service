@@ -76,27 +76,27 @@ const UpdateUserInfoForm = () => {
                 <div>
                     Email Address<br />
                     <textarea value={emailAddress}
-                              onChange={({target}) => setEmailAddress(target.value)} />
+                        onChange={({ target }) => setEmailAddress(target.value)} />
                 </div>
                 <div>
                     Contact Number<br />
                     <textarea value={contactNumber}
-                           onChange={({target}) => setContactNumber(target.value)} />
+                        onChange={({ target }) => setContactNumber(target.value)} />
                 </div>
                 <div>
                     Display Name<br />
                     <textarea value={displayName}
-                              onChange={({target}) => setDisplayName(target.value)} />
+                        onChange={({ target }) => setDisplayName(target.value)} />
                 </div>
                 <div>
                     Biller Email Address<br />
                     <textarea value={billerEmailAddress}
-                              onChange={({target}) => setBillerEmailAddress(target.value)} />
+                        onChange={({ target }) => setBillerEmailAddress(target.value)} />
                 </div>
                 <div>
                     Invoice Name<br />
                     <textarea value={invoiceName}
-                              onChange={({target}) => setInvoiceName(target.value)} />
+                        onChange={({ target }) => setInvoiceName(target.value)} />
                 </div>
                 <button type="submit">Save</button>
             </form>
