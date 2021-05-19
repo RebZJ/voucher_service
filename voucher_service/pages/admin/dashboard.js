@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { firebaseConf } from '../../lib/config';
 import { checkIfAdmin } from '../../lib/firebaseUtil';
-import AdminDashboard from './AdminDashboard';
+import AdminDashboard from '../../components/AdminDashboard';
 
 const firebaseConfig = firebaseConf;
 
@@ -20,7 +20,7 @@ export default function userScreen() {
 
     useEffect(() => {
         const authObserver = firebase.auth().onAuthStateChanged(user => {
-            if(user) {
+            if (user) {
                 // Check if the user is an admin
                 checkIfAdmin(firebase).then((data) => {
                     if ("Admin" == data.value.role) {
@@ -37,10 +37,10 @@ export default function userScreen() {
         return () => authObserver();
     }, []);
 
-    if(isSignedIn || notLoggedOn) {
-        if(isSignedIn) {
+    if (isSignedIn || notLoggedOn) {
+        if (isSignedIn) {
             return (
-                <AdminDashboard firebase={firebase}/>
+                <AdminDashboard firebase={firebase} />
             )
         } else {
             router.replace('/login');

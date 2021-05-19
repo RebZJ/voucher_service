@@ -1,8 +1,8 @@
 import { useRouter } from "next/router";
-import AddNewServiceType from "../../components/AddNewServiceType";
+import AddNewServiceType from "./AddNewServiceType";
 import { useState, useEffect } from "react";
 import firebase from 'firebase';
-import { firebaseConf } from '../../lib/config';
+import { firebaseConf } from '../lib/config';
 
 
 const firebaseConfig = firebaseConf;
@@ -12,7 +12,6 @@ if (!firebase.apps.length) {
 } else {
   firebase.app();
 }
-
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -94,11 +93,11 @@ export default function AdminDashboard() {
 
   return (
 
-    <div className="flex flex-col">
+    <div className="flex flex-col pt-20 ">
 
       <div className="justify-center flex flex-col ">
         <div className="flex justify-evenly pt-20 ">
-          <h1>Admin Dashboard</h1>
+          <h1 className=" font-bold">Admin Dashboard</h1>
           <p>Welcome admin! You are now signed in!</p>
           <button className="bg-blue-500 
               hover:bg-blue-700 text-white font-bold 

@@ -86,7 +86,7 @@ function Links(props) {
                 </button>
             </Link>
 
-            <Link href="/admin/AdminDashboard">
+            <Link href="/admin/dashboard">
                 <button
                     className={`${props.hg} ${props.pad} w-auto rounded-sm text-black font-bold ${buttonStyle}`}
                     onClick={() => console.log("thingo")}>
@@ -100,7 +100,6 @@ function Links(props) {
                     Login
                 </button>
             </Link>
-
         </React.Fragment>
     );
 }
