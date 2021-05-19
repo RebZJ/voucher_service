@@ -1,6 +1,6 @@
 import firebase from 'firebase';
 import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
+
 import { firebaseConf } from '../../lib/config';
 
 const firebaseConfig = firebaseConf;
@@ -63,8 +63,9 @@ export default function VBookings(props) {
     function populateBooking() {
         var list = [];
         for (let i in bookState) {
+
             if (bookState[i].uid) {
-                list.push(<BookingComponent book={bookState[i]} key={i} />);
+                list.push(<BookingComponent book={bookState[i]} item={i} key={i} />);
             }
         }
         return list;
@@ -75,7 +76,6 @@ export default function VBookings(props) {
         for (let i in voucherState) {
 
             list.push(<VoucherTypeComponent voucher={voucherState[i]} key={i} />);
-
         }
         return list;
     }
@@ -83,15 +83,12 @@ export default function VBookings(props) {
 
     return (
         <div className="flex flex-row">{
-
             bookState ?
                 <div className="justify-center flex min-h-screen p-4">
                     <div className="pt-10">
-
                         <ul>{populateBooking()}</ul>
                     </div>
                 </div>
-
                 :
                 <div>Loading...</div>}
             {
@@ -102,11 +99,8 @@ export default function VBookings(props) {
                             <ul>{populateVoucher()}</ul>
                         </div>
                     </div>
-
                     :
                     <div>Loading...</div>}
-
-
         </div>
     )
 }
@@ -114,20 +108,17 @@ export default function VBookings(props) {
 
 function VoucherTypeComponent(props) {
 
-    function updateInfo() {
+    function updateInfo(event) {
 
     }
+
     return (
         <div className=" my-4 shadow-md rounded-lg max-w-sm h-auto p-2 flex flex-col bg-blue-200">
-
             <div>
-
-
                 <p>Name: {props.voucher.name}</p>
                 <p>Location: {props.voucher.location}</p>
                 <p>Points: {props.voucher.points}</p>
                 <p>DeliveryOptions: {props.voucher.deliveryOptions[1] ? "1 and 2" : "1"}</p>
-
             </div>
 
             <div>
@@ -141,10 +132,23 @@ function VoucherTypeComponent(props) {
 }
 
 function BookingComponent(props) {
+    const [statusOf, setStatus] = useState(props.book.status)
 
-    function updateInfo() {
+    const dbRef = firebase.database().ref().child("voucherBookings");
 
+    function updateInfo(e) {
+        setStatus(e.target.value)
     }
+
+    async function upd() {
+
+        await dbRef.child(String(props.item)).update({
+            status: statusOf
+        })
+        console.log(statusOf)
+    }
+
+
     return (
         <div className=" my-4 shadow-md rounded-lg max-w-sm h-auto p-10 flex flex-col bg-blue-200">
             <p className="font-bold">Booking by: {props.book.uid}</p>
@@ -157,15 +161,21 @@ function BookingComponent(props) {
                 <p>Delivery: {props.book.delivery}</p>
                 <p>Location: {props.book.location}</p>
                 <p>Message: {props.book.message}</p>
-                <p>Status: {props.book.status}</p>
-                <p>Voucher Type: {props.book.voucherType}</p>
+                {/* <p>Status: {props.book.status}</p> */}
 
+                <p>Voucher Type: {props.book.voucherType}</p>
+                <span>Status: <select value={statusOf} onChange={updateInfo}>
+                    <option value="pending">pending</option>
+                    <option value="confirmed">confirmed</option>
+                    <option value="cancelled">cancelled</option>
+                </select>
+                </span>
             </div>
 
             <div>
                 <button className="bg-blue-500 
                 hover:bg-blue-700 text-white font-bold 
-                py-2 px-4 mt-4 rounded" onClick={() => updateInfo()}>
+                py-2 px-4 mt-4 rounded" onClick={() => upd()}>
                     Modify
                 </button>
             </div>
