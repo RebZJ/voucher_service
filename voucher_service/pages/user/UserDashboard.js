@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link'
 
 export default function UserDashboard({firebase}) {
@@ -21,15 +21,35 @@ export default function UserDashboard({firebase}) {
     return (
         <div className="justify-center flex min-h-screen ">
             <div className="pt-10">
-                <h1>Voucher-service</h1>
-                <p>Welcome {userData ? userData.displayName : "unknown user"}! You are now signed in!</p>
-                <Link href = "/user/AddNewBooking">
-                    <a> Add New Booking</a>
-                </Link> <br />
-                <Link href = "/user/ViewPendingBookings">
-                    <a> View Pending Bookings</a>
-                </Link> <br />
-                <button onClick={() => logout()}>Logout</button>
+                <p><b>Welcome {userData ? userData.displayName : "unknown user"}! You are now signed in!</b></p>
+                <div>
+                    <button className="bg-blue-500
+                hover:bg-blue-700 text-white font-bold
+                py-2 px-4 mt-4 rounded" onClick={() => router.replace('/user/AddNewBooking')}>
+                        Make a New Booking
+                    </button>
+                </div>
+                <div>
+                    <button className="bg-blue-500
+                hover:bg-blue-700 text-white font-bold
+                py-2 px-4 mt-4 rounded" onClick={() => router.replace('/user/ViewCancellableUserBookings')}>
+                        Cancel Booking
+                    </button>
+                </div>
+                <div>
+                    <button className="bg-blue-500
+                hover:bg-blue-700 text-white font-bold
+                py-2 px-4 mt-4 rounded" onClick={() => router.replace('/user/ViewAllUserBookings')}>
+                        View All Bookings
+                    </button>
+                </div>
+                <div>
+                    <button className="bg-blue-500
+                hover:bg-blue-700 text-white font-bold
+                py-2 px-4 mt-4 rounded" onClick={() => logout()}>
+                        Log Out
+                    </button>
+                </div>
             </div>
         </div>
     );
