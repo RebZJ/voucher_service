@@ -26,6 +26,9 @@ export default function UserDashboard({firebase}) {
                 <Link href = "/user/AddNewBooking">
                     <a> Add New Booking</a>
                 </Link> <br />
+                <Link href = "/user/ViewPendingBookings">
+                    <a> View Pending Bookings</a>
+                </Link> <br />
                 <button onClick={() => logout()}>Logout</button>
             </div>
         </div>

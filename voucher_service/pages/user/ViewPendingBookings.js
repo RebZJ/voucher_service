@@ -1,16 +1,17 @@
-import firebase from "firebase";
-import {firebaseConf} from "../../lib/config";
-import Head from "next/dist/next-server/lib/head";
-import AddNewBookingForm from "../../components/AddNewBookingForm"
-import React, { useState, useEffect } from "react";
-import { useRouter } from 'next/router';
+import firebase from 'firebase';
+import React, { useEffect, useState } from 'react';
+import { firebaseConf } from '../../lib/config';
+import {useRouter} from "next/router";
+import PendingUserBookings from "../../components/PendingUserBookings";
+const firebaseConfig = firebaseConf;
+
 
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConf);
 } else {
     firebase.app();
 }
-export default function AddNewBooking() {
+export default function ViewPendingBookings() {
     const [isSignedIn, setIsSignedIn] = useState(false);
     const [notLoggedOn, setNotLoggedOn] = useState(false);
     const router = useRouter();
@@ -30,7 +31,7 @@ export default function AddNewBooking() {
         if(isSignedIn) {
             return (
                 <div className="flex justify-start min-h-screen pt-10 m-8">
-                    <AddNewBookingForm/>
+                    <PendingUserBookings/>
                 </div>
             )
         } else {

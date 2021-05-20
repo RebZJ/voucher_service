@@ -221,11 +221,9 @@ const AddNewBookingForm = () => {
     }, 2000);
   };
   return (
-    <div>
+      <div className=" my-4 shadow-md rounded-lg max-w-sm h-auto p-10 flex flex-col bg-blue-200">
       <h2>
-        <b>
-          <u>Add New Booking</u>
-        </b>
+        <p className="font-bold"> <u>Add New Booking</u> </p>
       </h2>{" "}
       <br />
       <h3>
@@ -289,7 +287,13 @@ const AddNewBookingForm = () => {
             onChange={({ target }) => setOptionalMessage(target.value)}
           />
         </div>
-        <button type="submit">Save</button>
+        <div>
+          <button className="bg-blue-500
+                hover:bg-blue-700 text-white font-bold
+                py-2 px-4 mt-4 rounded" type="submit">
+            Submit
+          </button>
+        </div>
       </form>
     </div>
   );
