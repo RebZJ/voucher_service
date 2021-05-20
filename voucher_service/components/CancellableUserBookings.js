@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import firebase from "firebase";
 
-export default function PendingUserBookings() {
+export default function CancellableUserBookings() {
     const [bookings, setBookings] = useState(null);
     const uid = firebase.auth().currentUser.uid;
 
@@ -51,18 +51,48 @@ export default function PendingUserBookings() {
     )
 }
 
-function BookingComponent(props) {
+function BookingComponent(props, el) {
     const [statusOf, setStatus] = useState(props.book.status);
-    const dbRef = firebase.database().ref().child("voucherBookings");
+    const dbRef = firebase.database().ref();
+    const uid = firebase.auth().currentUser.uid;
     function updateInfo(e) {
         setStatus(e.target.value)
     }
     async function upd() {
-
-        await dbRef.child(String(props.item)).update({
+        // updating booking status
+        await dbRef.child("voucherBookings").child(String(props.item)).update({
             status: statusOf
-        })
-        console.log(statusOf)
+        });
+        // refunding the user their points
+        var data = {};
+        await dbRef.child("users").child(uid).get().then((snapshot) => {
+            if (snapshot.exists()) {
+                data = snapshot.val();
+            } else {
+                console.log("No data available");
+            }
+        }).catch((error) => {
+            console.log(error);
+        });
+        var pointsRemaining = parseFloat(data.pointsRemaining);
+        await dbRef.child("voucherTypeService").child("voucherType").get().then((snapshot) => {
+            if (snapshot.exists()) {
+                data = snapshot.val();
+            } else {
+                console.log("No data available");
+            }
+        }).catch((error) => {
+            console.log(error);
+        });
+        var pointsNeeded = 0;
+        for (let i in data) {
+            if (data[i].name == props.book.voucherType) {
+                pointsNeeded = parseFloat(data[i].points);
+            }
+        }
+        await dbRef.child("users").child(uid).update(
+            {pointsRemaining: pointsRemaining + pointsNeeded});
+        window.location.reload()
     }
 
     return (

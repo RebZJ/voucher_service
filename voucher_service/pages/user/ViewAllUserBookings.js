@@ -2,7 +2,7 @@ import firebase from 'firebase';
 import React, { useEffect, useState } from 'react';
 import { firebaseConf } from '../../lib/config';
 import {useRouter} from "next/router";
-import PendingUserBookings from "../../components/PendingUserBookings";
+import AllUserBookings from "../../components/AllUserBookings";
 const firebaseConfig = firebaseConf;
 
 
@@ -11,7 +11,7 @@ if (!firebase.apps.length) {
 } else {
     firebase.app();
 }
-export default function ViewPendingBookings() {
+export default function ViewAllUserBookings() {
     const [isSignedIn, setIsSignedIn] = useState(false);
     const [notLoggedOn, setNotLoggedOn] = useState(false);
     const router = useRouter();
@@ -31,7 +31,7 @@ export default function ViewPendingBookings() {
         if(isSignedIn) {
             return (
                 <div className="flex justify-start min-h-screen pt-10 m-8">
-                    <PendingUserBookings/>
+                    <AllUserBookings/>
                 </div>
             )
         } else {
