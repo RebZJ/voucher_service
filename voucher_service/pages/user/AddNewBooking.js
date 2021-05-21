@@ -1,5 +1,5 @@
 import firebase from "firebase";
-import {firebaseConf} from "../../lib/config";
+import { firebaseConf } from "../../lib/config";
 import Head from "next/dist/next-server/lib/head";
 import AddNewBookingForm from "../../components/AddNewBookingForm"
 import React, { useState, useEffect } from "react";
@@ -17,7 +17,7 @@ export default function AddNewBooking() {
 
     useEffect(() => {
         const authObserver = firebase.auth().onAuthStateChanged(user => {
-            if(user) {
+            if (user) {
                 setIsSignedIn(!!user);
             } else {
                 setNotLoggedOn(true);
@@ -26,11 +26,11 @@ export default function AddNewBooking() {
         return () => authObserver();
     })
 
-    if(isSignedIn || notLoggedOn) {
-        if(isSignedIn) {
+    if (isSignedIn || notLoggedOn) {
+        if (isSignedIn) {
             return (
-                <div className="flex justify-start min-h-screen pt-10 m-8">
-                    <AddNewBookingForm/>
+                <div className="flex justify-center min-h-screen pt-10 ">
+                    <AddNewBookingForm />
                 </div>
             )
         } else {

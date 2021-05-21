@@ -1,7 +1,7 @@
 import firebase from 'firebase';
 import React, { useEffect, useState } from 'react';
 import { firebaseConf } from '../../lib/config';
-import {useRouter} from "next/router";
+import { useRouter } from "next/router";
 import CancellableUserBookings from "../../components/CancellableUserBookings";
 const firebaseConfig = firebaseConf;
 
@@ -18,7 +18,7 @@ export default function ViewCancellableUserBookings() {
 
     useEffect(() => {
         const authObserver = firebase.auth().onAuthStateChanged(user => {
-            if(user) {
+            if (user) {
                 setIsSignedIn(!!user);
             } else {
                 setNotLoggedOn(true);
@@ -27,11 +27,11 @@ export default function ViewCancellableUserBookings() {
         return () => authObserver();
     })
 
-    if(isSignedIn || notLoggedOn) {
-        if(isSignedIn) {
+    if (isSignedIn || notLoggedOn) {
+        if (isSignedIn) {
             return (
-                <div className="flex justify-start min-h-screen pt-10 m-8">
-                    <CancellableUserBookings/>
+                <div className="flex justify-center min-h-screen pt-10 ">
+                    <CancellableUserBookings />
                 </div>
             )
         } else {

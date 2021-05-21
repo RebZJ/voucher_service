@@ -2,7 +2,7 @@ import UpdateUserInfoForm from "../../components/UpdateUserInfoForm";
 import Head from "next/dist/next-server/lib/head";
 import React, { useState, useEffect } from "react";
 import { useRouter } from 'next/router';
-import {firebaseConf} from '../../lib/config';
+import { firebaseConf } from '../../lib/config';
 import firebase from "firebase";
 
 if (!firebase.apps.length) {
@@ -17,7 +17,7 @@ export default function UpdateUserInfo() {
 
     useEffect(() => {
         const authObserver = firebase.auth().onAuthStateChanged(user => {
-            if(user) {
+            if (user) {
                 setIsSignedIn(!!user);
             } else {
                 setNotLoggedOn(true);
@@ -26,18 +26,18 @@ export default function UpdateUserInfo() {
         return () => authObserver();
     }, []);
 
-    if(isSignedIn || notLoggedOn) {
-        if(isSignedIn) {
+    if (isSignedIn || notLoggedOn) {
+        if (isSignedIn) {
             return (
-                <div className="flex justify-start min-h-screen ">
-                    <div className="pt-10 m-8">
+                <div className="flex justify-center min-h-screen ">
+                    <div className="pt-10 ">
                         <Head>
                             <title>Update User Info</title>
                         </Head>
-            
-                        <h1>Update User Info</h1> <br/> <br/> <br/>
-            
-                        <UpdateUserInfoForm/>
+
+                        <h1>Update User Info</h1> <br /> <br /> <br />
+
+                        <UpdateUserInfoForm />
                     </div>
                 </div>
             )

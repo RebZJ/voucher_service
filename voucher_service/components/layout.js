@@ -85,12 +85,11 @@ function Links(props) {
                     Home
                 </button>
             </Link>
-
-            <Link href="/admin/dashboard">
+            <Link href="/login">
                 <button
                     className={`${props.hg} ${props.pad} w-auto rounded-sm text-black font-bold ${buttonStyle}`}
                     onClick={() => console.log("thingo")}>
-                    Admin
+                    Dashboard
                 </button>
             </Link>
             <Link href="/login">
