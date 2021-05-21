@@ -210,6 +210,8 @@ function BookingComponent(props) {
           <option value="pending">pending</option>
           <option value="confirmed">confirmed</option>
           <option value="cancelled">cancelled</option>
+          <option value="accepted">accepted</option>
+          <option value="declined">declined</option>
         </select>
         </span>
       </div>

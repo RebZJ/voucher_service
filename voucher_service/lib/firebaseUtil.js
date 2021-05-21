@@ -1,11 +1,11 @@
 export async function checkIfAdmin(firebase) {
-    const data = {key:null, value:null}
+    const data = { key: null, value: null }
     const uid = firebase.auth().currentUser.uid
 
     const dbRef = firebase.database().ref();
     var hasData = false;
-    
-    while(!hasData) {
+
+    while (!hasData) {
         await dbRef.child("users").child(uid).get().then((snapshot) => {
             if (snapshot.exists()) {
                 data.key = snapshot.key;
