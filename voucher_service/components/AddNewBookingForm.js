@@ -23,6 +23,16 @@ const AddNewBookingForm = () => {
   const uid = firebase.auth().currentUser.uid;
   const dbRef = firebase.database().ref();
 
+  var nodemailer = require("nodemailer");
+
+  var transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: "swvoucherservice@gmail.com",
+      pass: "admin@123456",
+    },
+  });
+
   useEffect(() => {
     async function getVoucherServiceData() {
       var data = {};
@@ -64,6 +74,22 @@ const AddNewBookingForm = () => {
       setUserName(data.personalInfo.name);
       setContactNumber(data.personalInfo.contactNumber);
     }
+    let mailOptions = {
+      from: "swvoucherservice@gmail.com",
+      to: `${userEmail}`,
+      subject: "Booking Request",
+      html: `<h1>A booking request await confirmation.<h1><p>Name: ${userName}</p>
+                <p>email: ${userEmail}</p> <p>contact number: ${contactNumber}</p>
+                <p>date: ${date}</p> <p>optional message: ${optionalMessage}</p>`,
+    };
+
+    transporter.sendMail(mailOptions, function (error, info) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log("Email sent: " + info.response);
+      }
+    });
     getVoucherServiceData();
     getPointsRemaining();
   }, []);
@@ -221,9 +247,11 @@ const AddNewBookingForm = () => {
     }, 2000);
   };
   return (
-      <div className=" my-4 shadow-md rounded-lg max-w-sm h-auto p-10 flex flex-col bg-blue-200">
+    <div>
       <h2>
-        <p className="font-bold"> <u>Add New Booking</u> </p>
+        <b>
+          <u>Add New Booking</u>
+        </b>
       </h2>{" "}
       <br />
       <h3>
@@ -287,13 +315,7 @@ const AddNewBookingForm = () => {
             onChange={({ target }) => setOptionalMessage(target.value)}
           />
         </div>
-        <div>
-          <button className="bg-blue-500
-                hover:bg-blue-700 text-white font-bold
-                py-2 px-4 mt-4 rounded" type="submit">
-            Submit
-          </button>
-        </div>
+        <button type="submit">Save</button>
       </form>
     </div>
   );
